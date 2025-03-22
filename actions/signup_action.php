@@ -8,7 +8,7 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
 
   if (empty($username) || empty($password)) {
     $_SESSION["err_message"] = "Username dan Password tidak boleh kosong";
-    header('Location: ../pages/signup.php');
+    header("Location:" . BASE_URL . "/pages/signup.php");
     exit;
   }
 
@@ -20,7 +20,7 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
 
   if ($stmt->num_rows > 0) {
     $_SESSION['err_message'] = "Username sudah digunakan, silakan pilih yang lain!";
-    header("Location: ../pages/signup.php");
+    header("Location:" . BASE_URL . "/pages/signup.php");
     exit;
   }
 
@@ -34,7 +34,7 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
     header('Location: ../pages/signup.php');
   } else {
     $_SESSION["err_message"] = "Terjadi kesalahan, coba lagi!";
-    header('Location: ../pages/signup.php');
+    header("Location:" . BASE_URL . "/pages/signup.php");
   }
 
   $stmt->close();

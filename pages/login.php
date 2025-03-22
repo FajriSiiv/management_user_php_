@@ -8,7 +8,7 @@ if (!isset($_SESSION['csrf_token'])) {
 }
 
 if (isset($_SESSION['user_id'])) {
-  header("Location: ../pages/dashboard.php");
+  header("Location: ../pages/admin/dashboard.php");
   exit;
 }
 
@@ -16,14 +16,13 @@ if (isset($_SESSION['user_id'])) {
 ?>
 
 
-<form class="w-50 mx-auto pt-5" method="POST" action="../actions/login_action.php">
+<form class="w-25 mx-auto pt-5" method="POST" action="../actions/login_action.php">
   <h2 class="text-2xl fw-bold mb-5">Login</h2>
   <input type="hidden" name="csrf_token" value="<?php echo htmlspecialchars($_SESSION['csrf_token']); ?>" />
 
   <div class="mb-3">
     <label for="username" class="form-label">Username</label>
     <input type="text" name="username" class="form-control" id="username" />
-    <!-- <div class="form-text">We'll never share your username with anyone else.</div> -->
   </div>
   <div class="mb-3">
     <label for="password" class="form-label">Password</label>

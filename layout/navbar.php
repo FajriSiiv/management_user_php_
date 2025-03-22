@@ -1,8 +1,10 @@
 <?php
+include(__DIR__ . "/../config/database.php");
+
 if (session_status() === PHP_SESSION_NONE) {
   session_start();
 }
-include("../config/database.php");
+
 ?>
 
 <html lang="en">
@@ -19,7 +21,8 @@ include("../config/database.php");
 <body>
   <nav class="navbar navbar-expand-lg bg-body-tertiary">
     <div class="container-fluid">
-      <a class="navbar-brand" href="../pages/dashboard.php">Management User</a>
+      <a class="navbar-brand" href="<?php echo BASE_URL; ?>/pages/admin/dashboard.php
+      ">Management User</a>
       <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavAltMarkup"
         aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
@@ -27,8 +30,9 @@ include("../config/database.php");
       <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
         <div class="navbar-nav ms-auto">
           <?php if (isset($_SESSION['user_id'])): ?>
-            <a class="nav-link active" aria-current="page" href="../pages/dashboard.php">Dashboard</a>
-            <a href="../actions/logout_action.php" class="bg-red-500 text-black px-4 py-2 rounded">Logout</a>
+            <a class="nav-link active" aria-current="page" href="../pages/admin/dashboard.php">Dashboard</a>
+            <a href="/project-php/admin-panel-user-management/actions/logout_action.php"
+              class="bg-red-500 text-black px-4 py-2 rounded">Logout</a>
           <?php else: ?>
             <a class="nav-link active" aria-current="page" href="../pages/login.php">Login</a>
             <a class="nav-link active" aria-current="page" href="../pages/signup.php">Signup</a>
