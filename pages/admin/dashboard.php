@@ -13,7 +13,7 @@ $users = mysqli_fetch_all($result, MYSQLI_ASSOC);
   <h2>Dashbord Admin <?php echo $_SESSION['success_message'] ?></h2>
   <h2 id="update_message"></h2>
   <?php if (empty($users)): ?>
-  <p class="lead mt-3">There is no list</p>
+    <p class="lead mt-3">There is no list</p>
   <?php endif; ?>
   <table class="table w-75 table-bordered border-primary mx-auto mt-4">
     <thead>
@@ -26,22 +26,22 @@ $users = mysqli_fetch_all($result, MYSQLI_ASSOC);
     </thead>
     <tbody>
       <?php foreach ($users as $index => $user) { ?>
-      <tr>
-        <th scope="row"><?php echo $index + 1; ?></th>
-        <td><?php echo htmlspecialchars($user['username']) ?></td>
-        <td><?php echo htmlspecialchars($user['role']) ?></td>
-        <td class="d-flex gap-2">
-          <button class="btn btn-sm flex-grow-1 btn-primary editUser" style="height:fit-content;"
-            data-id="<?php echo $user['id']; ?>" data-username="<?php echo htmlspecialchars($user['username']); ?>"
-            data-role="<?php echo htmlspecialchars($user['role']); ?>">
-            Edit
-          </button>
-          <form action="../../actions/user/delete_user.php" method="POST">
-            <input type="hidden" name="id" value="<?php echo $user['id'] ?>">
-            <button type="submit" class="btn btn-sm flex-grow-1 btn-danger">Delete</button>
-          </form>
-        </td>
-      </tr>
+        <tr>
+          <th scope="row"><?php echo $index + 1; ?></th>
+          <td><?php echo htmlspecialchars($user['username']) ?></td>
+          <td><?php echo htmlspecialchars($user['role']) ?></td>
+          <td class="d-flex gap-2">
+            <button class="btn btn-sm flex-grow-1 btn-primary editUser" style="height:fit-content;"
+              data-id="<?php echo $user['id']; ?>" data-username="<?php echo htmlspecialchars($user['username']); ?>"
+              data-role="<?php echo htmlspecialchars($user['role']); ?>">
+              Edit
+            </button>
+            <form action="../../actions/admin/delete_user.php" method="POST">
+              <input type="hidden" name="id" value="<?php echo $user['id'] ?>">
+              <button type="submit" class="btn btn-sm flex-grow-1 btn-danger">Delete</button>
+            </form>
+          </td>
+        </tr>
       <?php } ?>
     </tbody>
   </table>
@@ -97,59 +97,59 @@ $users = mysqli_fetch_all($result, MYSQLI_ASSOC);
 
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script>
-$(document).ready(function() {
-  const toastLive = document.getElementById('liveToast')
+  $(document).ready(function () {
+    const toastLive = document.getElementById('liveToast')
 
 
-  $(".editUser").click(function() {
-    var userId = $(this).data("id");
-    var username = $(this).data("username");
-    var role = $(this).data("role");
+    $(".editUser").click(function () {
+      var userId = $(this).data("id");
+      var username = $(this).data("username");
+      var role = $(this).data("role");
 
-    $("#userId").val(userId);
-    $("#username").val(username);
-    $("#role").val(role);
+      $("#userId").val(userId);
+      $("#username").val(username);
+      $("#role").val(role);
 
-    $("#form-text").text("");
-    $("#editModal").modal("show");
-  });
+      $("#form-text").text("");
+      $("#editModal").modal("show");
+    });
 
-  $("#editForm").submit(function(e) {
-    e.preventDefault();
+    $("#editForm").submit(function (e) {
+      e.preventDefault();
 
-    var userId = $("#userId").val();
-    var username = $("#username").val();
-    var role = $("#role").val();
-
-
-    $.ajax({
-      url: "../../actions/user/update_user.php",
-      type: "POST",
-      data: {
-        id: userId,
-        username: username,
-        role: role
-      },
-      success: function(response) {
-        if (!response.success) {
-          $("#form-text").text(response.message).css("color", "red");
-        } else {
-
-          const toastBootstrap = bootstrap.Toast.getOrCreateInstance(toastLive)
-          toastBootstrap.show()
-
-          $("#toast-message").text(response.message).css({
-            "color": "green"
-          });
+      var userId = $("#userId").val();
+      var username = $("#username").val();
+      var role = $("#role").val();
 
 
-          $("#editModal").modal("hide");
+      $.ajax({
+        url: "../../actions/admin/update_user.php",
+        type: "POST",
+        data: {
+          id: userId,
+          username: username,
+          role: role
+        },
+        success: function (response) {
+          if (!response.success) {
+            $("#form-text").text(response.message).css("color", "red");
+          } else {
+
+            const toastBootstrap = bootstrap.Toast.getOrCreateInstance(toastLive)
+            toastBootstrap.show()
+
+            $("#toast-message").text(response.message).css({
+              "color": "green"
+            });
+
+
+            $("#editModal").modal("hide");
+          }
+
         }
-
-      }
+      });
     });
   });
-});
 </script>
 
 </body>

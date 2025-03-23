@@ -2,49 +2,47 @@
 session_start();
 include("../../config/database.php");
 
-header("Content-Type: application/json");
 
-$response = [];
 
-if ($_SERVER['REQUEST_METHOD'] === "POST") {
-  $id = isset($_POST['id']) ? intval($_POST['id']) : 0;
-  $username = isset($_POST['username']) ? trim($_POST['username']) : '';
-  $role = isset($_POST['role']) ? trim($_POST['role']) : '';
+$user_id = $_SESSION['user_id'];
 
-  if (empty($id) || empty($username) || empty($role)) {
-    $response["success"] = false;
-    $response["message"] = "ID, Username dan Role harus diisi!";
-  } else {
-    if (!in_array($role, ["user", "admin"])) {
-      $response["message"] = "Role tidak valid!";
-    } else {
-      $stmt = $conn->prepare("SELECT id FROM users WHERE username = ? AND id != ?");
-      $stmt->bind_param("si", $username, $id);
-      $stmt->execute();
-      $stmt->store_result();
+if ($_SERVER["REQUEST_METHOD"] == "POST") {
+  $new_username = trim($_POST['username']);
+  $password = trim($_POST['password']);
 
-      if ($stmt->num_rows > 0) {
-        $response["message"] = "Username sudah digunakan!";
-      } else {
-
-        $stmt = $conn->prepare('UPDATE users SET username = ?, role = ? WHERE id = ?');
-        $stmt->bind_param('ssi', $username, $role, $id);
-
-        if ($stmt->execute()) {
-          $response["success"] = true;
-          $response["message"] = "Data berhasil diperbarui!";
-        } else {
-          $response["message"] = "Gagal memperbarui data.";
-        }
-
-        $stmt->close();
-      }
-    }
+  if (empty($new_username) || empty($password)) {
+    $_SESSION["err_message"] = "Username dan password tidak boleh kosong!";
+    header("Location: " . BASE_URL . "/pages/user/dashboard.php");
+    exit();
   }
-} else {
-  $response["success"] = false;
-  $response["message"] = "Metode tidak diizinkan!";
+
+  $sql = "SELECT password FROM users WHERE id = ?";
+  $stmt = $conn->prepare($sql);
+  $stmt->bind_param("i", $user_id);
+  $stmt->execute();
+  $result = $stmt->get_result();
+  $user = $result->fetch_assoc();
+
+  if (!$user || !password_verify($password, $user['password'])) {
+    $_SESSION["err_message"] = "Password salah!";
+    header("Location: " . BASE_URL . "/pages/user/dashboard.php");
+    exit();
+  }
+
+  // Update username di database
+  $sql_update = "UPDATE users SET username = ? WHERE id = ?";
+  $stmt = $conn->prepare($sql_update);
+  $stmt->bind_param("si", $new_username, $user_id);
+
+  if ($stmt->execute()) {
+    $_SESSION['username'] = $new_username;
+    $_SESSION['success_message'] = "Username berhasil diperbarui!";
+    header("Location: " . BASE_URL . "/pages/user/dashboard.php");
+    exit();
+  } else {
+    $_SESSION["err_message"] = "Gagal update username!";
+    header("Location: " . BASE_URL . "/pages/user/dashboard.php");
+    exit();
+  }
 }
-echo json_encode($response);
-exit;
 ?>
